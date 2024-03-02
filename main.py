@@ -1,16 +1,48 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import pygame
+import sys
+import os
+import random
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+pygame.init()
+current_path = os.path.dirname(__file__)
+os.chdir(current_path)
+FPS = 60
+W = 1200
+H = 800
+sc = pygame.display.set_mode((W, H))
+clock = pygame.time.Clock()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+from load import *
+
+def game_lvl():
+    sc.fill("gray")
+    food_group.update()
+    food_group.draw(sc)
+    pygame.display.update()
+
+class Food(pygame.sprite.Sprite):
+    def __init__(self, image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(100, W - 100)
+        self.rect.y = random.randint(100, H - 100)
+
+def restart():
+    global player_group, food_group, enemy_1_group, enemy_2_group
+    player_group = pygame.sprite.Group()
+    food_group = pygame.sprite.Group()
+    enemy_1_group = pygame.sprite.Group()
+    enemy_2_group = pygame.sprite.Group()
+restart()
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+    if len(food_group) < 20:
+        food = Food(food_image)
+        food_group.add(food)
+    game_lvl()
+    clock.tick(FPS)
